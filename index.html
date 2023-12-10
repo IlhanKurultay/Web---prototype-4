@@ -7,8 +7,6 @@
     <title>Vue.js + Three.js Example</title>
   </head>
   <body>
-    <div v-if="loading" class="loading-spinner">Loading...</div>
-
     <div class="container">
       <div id="app">
         <div class="buttons">
@@ -51,7 +49,7 @@
         methods: {
           initThree() {
             this.scene = new THREE.Scene();
-            this.scene.background = new THREE.Color(0x090a0c); // Set background color to #090A0C
+            this.scene.background = new THREE.Color(0x090a0c);
 
             const canvasWidth = window.innerWidth * 0.8;
             const canvasHeight = window.innerHeight * 0.8;
@@ -81,49 +79,38 @@
             directionalLight.position.set(5, 5, 5);
             this.scene.add(directionalLight);
 
-            // Load the initial model
             this.loadModel();
 
-            // Add OrbitControls
             this.controls = new THREE.OrbitControls(
               this.camera,
               this.renderer.domElement
             );
-            this.controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+            this.controls.enableDamping = true;
             this.controls.dampingFactor = 0.25;
             this.controls.screenSpacePanning = false;
             this.controls.maxPolarAngle = Math.PI / 2;
 
-            // Animation loop
             const animate = () => {
               requestAnimationFrame(animate);
 
-              // Update controls
               this.controls.update();
 
               this.renderer.render(this.scene, this.camera);
             };
-
-            // Start the animation loop
             animate();
           },
 
           loadModel() {
-            // Clear previous model
             if (this.modelMesh) {
               this.scene.remove(this.modelMesh);
             }
-
-            // Load the current model
             const currentModel = this.models[this.currentModelIndex];
             this.loader.load(currentModel.path, (gltf) => {
               this.modelMesh = gltf.scene;
               this.scene.add(this.modelMesh);
             });
           },
-
           changeModel(index) {
-            // Load the selected model
             this.currentModelIndex = index;
             this.loadModel();
           },
